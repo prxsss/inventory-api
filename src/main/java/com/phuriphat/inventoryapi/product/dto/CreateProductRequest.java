@@ -30,4 +30,8 @@ public class CreateProductRequest {
     @NotNull
     @PositiveOrZero
     private Integer lowStockThreshold;
+
+    @NotNull
+    @Positive
+    private Long categoryId;
 }

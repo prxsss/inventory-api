@@ -1,5 +1,7 @@
 package com.phuriphat.inventoryapi.product;
 
+import com.phuriphat.inventoryapi.category.Category;
+import com.phuriphat.inventoryapi.category.CategoryRepository;
 import com.phuriphat.inventoryapi.exception.ResourceNotFoundException;
 import com.phuriphat.inventoryapi.product.dto.CreateProductRequest;
 import com.phuriphat.inventoryapi.product.dto.ProductResponse;
@@ -13,9 +15,13 @@ import java.util.List;
 public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
+    private final CategoryRepository categoryRepository;
 
     @Override
     public ProductResponse create(CreateProductRequest createProductRequest) {
+         Category category = categoryRepository.findById(createProductRequest.getCategoryId())
+                 .orElseThrow(() -> new ResourceNotFoundException("Category not found"));
+
         Product product = Product.builder()
                 .sku(createProductRequest.getSku())
                 .name(createProductRequest.getName())
@@ -24,6 +30,7 @@ public class ProductServiceImpl implements ProductService {
                 .price(createProductRequest.getPrice())
                 .quantity(createProductRequest.getQuantity())
                 .lowStockThreshold(createProductRequest.getLowStockThreshold())
+                .category(category)
                 .build();
 
         Product savedProduct = productRepository.save(product);
@@ -78,6 +85,7 @@ public class ProductServiceImpl implements ProductService {
                 .price(product.getPrice())
                 .quantity(product.getQuantity())
                 .lowStockThreshold(product.getLowStockThreshold())
+                .categoryName(product.getCategory().getName())
                 .createdAt(product.getCreatedAt())
                 .build();
     }

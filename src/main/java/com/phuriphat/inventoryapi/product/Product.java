@@ -1,5 +1,6 @@
 package com.phuriphat.inventoryapi.product;
 
+import com.phuriphat.inventoryapi.category.Category;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -35,6 +36,10 @@ public class Product {
 
     @Column(name = "low_stock_threshold")
     private Integer lowStockThreshold;
+
+    @ManyToOne
+    @JoinColumn(name = "category_id")
+    private Category category;
 
     private LocalDateTime createdAt;
 
