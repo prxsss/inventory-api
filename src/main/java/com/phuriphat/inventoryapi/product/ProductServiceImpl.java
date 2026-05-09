@@ -1,5 +1,6 @@
 package com.phuriphat.inventoryapi.product;
 
+import com.phuriphat.inventoryapi.exception.ResourceNotFoundException;
 import com.phuriphat.inventoryapi.product.dto.CreateProductRequest;
 import com.phuriphat.inventoryapi.product.dto.ProductResponse;
 import lombok.RequiredArgsConstructor;
@@ -41,7 +42,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ProductResponse getById(Long id) {
         Product product = productRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Product not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Product not found"));
 
         return mapToResponse(product);
     }
@@ -49,7 +50,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ProductResponse update(Long id, CreateProductRequest createProductRequest) {
         Product product =  productRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Product not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Product not found"));
 
         product.setSku(createProductRequest.getSku());
         product.setName(createProductRequest.getName());
