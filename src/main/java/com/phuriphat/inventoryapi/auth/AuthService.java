@@ -1,0 +1,61 @@
+package com.phuriphat.inventoryapi.auth;
+
+import com.phuriphat.inventoryapi.auth.dto.AuthResponse;
+import com.phuriphat.inventoryapi.auth.dto.LoginRequest;
+import com.phuriphat.inventoryapi.auth.dto.RegisterRequest;
+import com.phuriphat.inventoryapi.exception.InvalidCredentialsException;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+
+@Service
+@RequiredArgsConstructor
+public class AuthService {
+
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final JwtService jwtService;
+    private final AuthenticationManager authenticationManager;
+
+    public AuthResponse register(RegisterRequest registerRequest) {
+        if (userRepository.findByEmail(registerRequest.getEmail()).isPresent()) {
+            throw new RuntimeException("Email already exists");
+        }
+
+        User user =User.builder()
+                .name(registerRequest.getName())
+                .email(registerRequest.getEmail())
+                .password(passwordEncoder.encode(registerRequest.getPassword()))
+                .role(Role.USER)
+                .build();
+
+        userRepository.save(user);
+        String token = jwtService.generateToken(user);
+
+        return AuthResponse.builder()
+                .token(token)
+                .email(user.getEmail())
+                .name(user.getName())
+                .build();
+    }
+
+    public AuthResponse login(LoginRequest loginRequest) {
+        // Spring will throw an exception if the credentials are incorrect.
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword())
+        );
+
+        User user = userRepository.findByEmail(loginRequest.getEmail())
+                .orElseThrow(() -> new InvalidCredentialsException("Invalid email or password"));
+
+        String token = jwtService.generateToken(user);
+
+        return AuthResponse.builder()
+                .token(token)
+                .email(user.getEmail())
+                .name(user.getName())
+                .build();
+    }
+}
