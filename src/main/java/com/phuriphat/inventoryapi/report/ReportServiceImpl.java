@@ -4,7 +4,6 @@ import com.phuriphat.inventoryapi.category.CategoryRepository;
 import com.phuriphat.inventoryapi.product.ProductRepository;
 import com.phuriphat.inventoryapi.report.dto.InventorySummaryResponse;
 import com.phuriphat.inventoryapi.report.dto.LowStockProductResponse;
-import com.phuriphat.inventoryapi.stock.StockTransactionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +15,6 @@ public class ReportServiceImpl implements ReportService {
 
     private final ProductRepository productRepository;
     private final CategoryRepository  categoryRepository;
-    private final StockTransactionRepository stockTransactionRepository;
 
     @Override
     public List<LowStockProductResponse> getLowStockProducts() {
