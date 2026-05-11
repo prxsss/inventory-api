@@ -3,6 +3,7 @@ package com.phuriphat.inventoryapi.stock;
 import com.phuriphat.inventoryapi.exception.ResourceNotFoundException;
 import com.phuriphat.inventoryapi.product.Product;
 import com.phuriphat.inventoryapi.product.ProductRepository;
+import com.phuriphat.inventoryapi.stock.dto.StockHistoryResponse;
 import com.phuriphat.inventoryapi.stock.dto.StockRequest;
 import com.phuriphat.inventoryapi.stock.dto.StockTransactionResponse;
 import jakarta.transaction.Transactional;
@@ -79,6 +80,24 @@ public class StockServiceImpl implements StockService {
                         .note(stockTransaction.getNote())
                         .createdAt(stockTransaction.getCreatedAt())
                         .build())
+                .toList();
+    }
+
+    @Override
+    public List<StockHistoryResponse> getHistoryByProductId(Long productId) {
+        productRepository.findById(productId)
+                .orElseThrow(() -> new ResourceNotFoundException("Product not found"));
+
+        return stockTransactionRepository.findByProductIdOrderByCreatedAtDesc(productId)
+                .stream()
+                .map(stockTransaction -> StockHistoryResponse.builder()
+                    .id(stockTransaction.getId())
+                    .type(stockTransaction.getType())
+                    .quantity(stockTransaction.getQuantity())
+                    .note(stockTransaction.getNote())
+                    .createdAt(stockTransaction.getCreatedAt())
+                    .build()
+                )
                 .toList();
     }
 }

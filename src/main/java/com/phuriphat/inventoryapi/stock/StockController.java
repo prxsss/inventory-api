@@ -1,5 +1,6 @@
 package com.phuriphat.inventoryapi.stock;
 
+import com.phuriphat.inventoryapi.stock.dto.StockHistoryResponse;
 import com.phuriphat.inventoryapi.stock.dto.StockRequest;
 import com.phuriphat.inventoryapi.stock.dto.StockTransactionResponse;
 import jakarta.validation.Valid;
@@ -37,5 +38,13 @@ public class StockController {
     @GetMapping("/history")
     public ResponseEntity<List<StockTransactionResponse>> getHistory() {
         return ResponseEntity.ok(stockService.getHistory());
+    }
+
+
+    @GetMapping("/history/{productId}")
+    public ResponseEntity<List<StockHistoryResponse>> getHistoryByProductId(
+            @PathVariable Long productId
+    ) {
+        return ResponseEntity.ok(stockService.getHistoryByProductId(productId));
     }
 }
