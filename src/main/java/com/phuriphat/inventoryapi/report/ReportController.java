@@ -1,5 +1,6 @@
 package com.phuriphat.inventoryapi.report;
 
+import com.phuriphat.inventoryapi.common.ApiResponse;
 import com.phuriphat.inventoryapi.report.dto.InventorySummaryResponse;
 import com.phuriphat.inventoryapi.report.dto.LowStockProductResponse;
 import lombok.RequiredArgsConstructor;
@@ -18,12 +19,26 @@ public class ReportController {
     private final ReportService reportService;
 
     @GetMapping("/low-stock")
-    public ResponseEntity<List<LowStockProductResponse>> getLowStockProducts() {
-        return ResponseEntity.ok(reportService.getLowStockProducts());
+    public ResponseEntity<ApiResponse<List<LowStockProductResponse>>> getLowStockProducts() {
+        List<LowStockProductResponse> response = reportService.getLowStockProducts();
+        ApiResponse<List<LowStockProductResponse>> apiResponse = ApiResponse.<List<LowStockProductResponse>>builder()
+                .success(true)
+                .message("Success")
+                .data(response)
+                .build();
+
+        return ResponseEntity.ok(apiResponse);
     }
 
     @GetMapping("/summary")
-     ResponseEntity<InventorySummaryResponse> getInventorySummary() {
-        return ResponseEntity.ok(reportService.getInventorySummary());
+      ResponseEntity<ApiResponse<InventorySummaryResponse>> getInventorySummary() {
+          InventorySummaryResponse response = reportService.getInventorySummary();
+          ApiResponse<InventorySummaryResponse> apiResponse = ApiResponse.<InventorySummaryResponse>builder()
+                     .success(true)
+                     .message("Success")
+                     .data(response)
+                     .build();
+
+          return ResponseEntity.ok(apiResponse);
     }
 }

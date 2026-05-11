@@ -1,5 +1,6 @@
 package com.phuriphat.inventoryapi.product;
 
+import com.phuriphat.inventoryapi.common.ApiResponse;
 import com.phuriphat.inventoryapi.product.dto.CreateProductRequest;
 import com.phuriphat.inventoryapi.product.dto.ProductResponse;
 import jakarta.validation.Valid;
@@ -12,7 +13,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/products")
@@ -21,14 +21,19 @@ public class ProductController {
     private final ProductService productService;
 
     @PostMapping
-    public ResponseEntity<ProductResponse> create(@Valid @RequestBody CreateProductRequest createProductRequest) {
+    public ResponseEntity<ApiResponse<ProductResponse>> create(@Valid @RequestBody CreateProductRequest createProductRequest) {
         ProductResponse response =  productService.create(createProductRequest);
+        ApiResponse<ProductResponse> apiResponse = ApiResponse.<ProductResponse>builder()
+                .success(true)
+                .message("Product created")
+                .data(response)
+                .build();
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        return ResponseEntity.status(HttpStatus.CREATED).body(apiResponse);
     }
 
     @GetMapping
-    public ResponseEntity<Page<ProductResponse>> search(
+    public ResponseEntity<ApiResponse<Page<ProductResponse>>> search(
             @RequestParam(required = false) String keyword,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
@@ -36,27 +41,48 @@ public class ProductController {
             @RequestParam(defaultValue = "ASC") Sort.Direction direction) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sortBy));
         Page<ProductResponse> responses = productService.search(keyword, pageable);
-        return ResponseEntity.ok(responses);
+        ApiResponse<Page<ProductResponse>> apiResponse = ApiResponse.<Page<ProductResponse>>builder()
+                .success(true)
+                .message("Success")
+                .data(responses)
+                .build();
+
+        return ResponseEntity.ok(apiResponse);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ProductResponse> getById(@PathVariable Long id) {
+    public ResponseEntity<ApiResponse<ProductResponse>> getById(@PathVariable Long id) {
         ProductResponse response =  productService.getById(id);
+        ApiResponse<ProductResponse> apiResponse = ApiResponse.<ProductResponse>builder()
+                .success(true)
+                .message("Success")
+                .data(response)
+                .build();
 
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(apiResponse);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ProductResponse> update(@PathVariable Long id, @Valid @RequestBody CreateProductRequest createProductRequest) {
+    public ResponseEntity<ApiResponse<ProductResponse>> update(@PathVariable Long id, @Valid @RequestBody CreateProductRequest createProductRequest) {
         ProductResponse response =  productService.update(id, createProductRequest);
+        ApiResponse<ProductResponse> apiResponse = ApiResponse.<ProductResponse>builder()
+                .success(true)
+                .message("Product updated")
+                .data(response)
+                .build();
 
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(apiResponse);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
+    public ResponseEntity<ApiResponse<Void>> delete(@PathVariable Long id) {
         productService.delete(id);
+        ApiResponse<Void> apiResponse = ApiResponse.<Void>builder()
+                .success(true)
+                .message("Product deleted")
+                .data(null)
+                .build();
 
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(apiResponse);
     }
 }
