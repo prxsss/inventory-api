@@ -6,6 +6,9 @@ import com.phuriphat.inventoryapi.exception.ResourceNotFoundException;
 import com.phuriphat.inventoryapi.product.dto.CreateProductRequest;
 import com.phuriphat.inventoryapi.product.dto.ProductResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -80,6 +83,16 @@ public class ProductServiceImpl implements ProductService {
                 .stream()
                 .map(this::mapToResponse)
                 .toList();
+    }
+
+    @Override
+    public Page<ProductResponse> search(String keyword, Pageable pageable) {
+        String searchKeyword = (keyword == null || keyword.trim().isEmpty()) 
+            ? "" 
+            : keyword;
+        
+        Page<Product> products = productRepository.findByNameContainingIgnoreCase(searchKeyword, pageable);
+        return products.map(this::mapToResponse);
     }
 
     private ProductResponse mapToResponse(Product product) {
