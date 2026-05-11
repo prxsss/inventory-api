@@ -3,6 +3,7 @@ package com.phuriphat.inventoryapi.auth;
 import com.phuriphat.inventoryapi.auth.dto.AuthResponse;
 import com.phuriphat.inventoryapi.auth.dto.LoginRequest;
 import com.phuriphat.inventoryapi.auth.dto.RegisterRequest;
+import com.phuriphat.inventoryapi.exception.DuplicateEmailException;
 import com.phuriphat.inventoryapi.exception.InvalidCredentialsException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -21,7 +22,7 @@ public class AuthService {
 
     public AuthResponse register(RegisterRequest registerRequest) {
         if (userRepository.findByEmail(registerRequest.getEmail()).isPresent()) {
-            throw new RuntimeException("Email already exists");
+            throw new DuplicateEmailException("Email already exists");
         }
 
         User user =User.builder()
@@ -42,7 +43,8 @@ public class AuthService {
     }
 
     public AuthResponse login(LoginRequest loginRequest) {
-        // Spring will throw an exception if the credentials are incorrect.
+        // Spring will throw BadCredentialsException if the credentials are incorrect,
+        // which is handled by GlobalExceptionHandler
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword())
         );

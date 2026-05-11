@@ -55,6 +55,8 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public void delete(Long id) {
+        categoryRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Category not found"));
         categoryRepository.deleteById(id);
     }
 
