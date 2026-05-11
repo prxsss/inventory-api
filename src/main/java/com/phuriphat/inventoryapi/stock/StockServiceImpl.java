@@ -1,11 +1,8 @@
-package com.phuriphat.inventoryapi.category;
+package com.phuriphat.inventoryapi.stock;
 
 import com.phuriphat.inventoryapi.exception.ResourceNotFoundException;
 import com.phuriphat.inventoryapi.product.Product;
 import com.phuriphat.inventoryapi.product.ProductRepository;
-import com.phuriphat.inventoryapi.stock.StockTransaction;
-import com.phuriphat.inventoryapi.stock.StockTransactionRepository;
-import com.phuriphat.inventoryapi.stock.TransactionType;
 import com.phuriphat.inventoryapi.stock.dto.StockRequest;
 import com.phuriphat.inventoryapi.stock.dto.StockTransactionResponse;
 import jakarta.transaction.Transactional;

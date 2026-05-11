@@ -1,6 +1,5 @@
 package com.phuriphat.inventoryapi.stock;
 
-import com.phuriphat.inventoryapi.category.StockService;
 import com.phuriphat.inventoryapi.stock.dto.StockRequest;
 import com.phuriphat.inventoryapi.stock.dto.StockTransactionResponse;
 import jakarta.validation.Valid;

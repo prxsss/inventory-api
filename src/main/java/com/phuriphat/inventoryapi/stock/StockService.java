@@ -1,4 +1,4 @@
-package com.phuriphat.inventoryapi.category;
+package com.phuriphat.inventoryapi.stock;
 
 import com.phuriphat.inventoryapi.stock.dto.StockRequest;
 import com.phuriphat.inventoryapi.stock.dto.StockTransactionResponse;
