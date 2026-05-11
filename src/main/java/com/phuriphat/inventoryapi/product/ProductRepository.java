@@ -26,4 +26,6 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
         FROM Product p
     """)
     Integer getTotalQuantity();
+
+    List<Product> findByNameContainingIgnoreCase(String keyword);
 }

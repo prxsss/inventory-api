@@ -39,14 +39,6 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<ProductResponse> getAll() {
-        return productRepository.findAll()
-                .stream()
-                .map(this::mapToResponse)
-                .toList();
-    }
-
-    @Override
     public ProductResponse getById(Long id) {
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Product not found"));
@@ -76,6 +68,18 @@ public class ProductServiceImpl implements ProductService {
         productRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Product not found"));
         productRepository.deleteById(id);
+    }
+
+    @Override
+    public List<ProductResponse> search(String keyword) {
+        String searchKeyword = (keyword == null || keyword.trim().isEmpty()) 
+            ? "" 
+            : keyword;
+        
+        return productRepository.findByNameContainingIgnoreCase(searchKeyword)
+                .stream()
+                .map(this::mapToResponse)
+                .toList();
     }
 
     private ProductResponse mapToResponse(Product product) {

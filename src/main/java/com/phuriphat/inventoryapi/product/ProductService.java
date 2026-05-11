@@ -8,11 +8,11 @@ import java.util.List;
 public interface ProductService {
     ProductResponse create(CreateProductRequest createProductRequest);
 
-    List<ProductResponse> getAll();
-
     ProductResponse getById(Long id);
 
     ProductResponse update(Long id, CreateProductRequest createProductRequest);
 
     void delete(Long id);
+
+    List<ProductResponse> search(String keyword);
 }
