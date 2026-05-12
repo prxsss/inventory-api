@@ -11,8 +11,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 @Service
 @RequiredArgsConstructor
 public class ProductServiceImpl implements ProductService {
@@ -75,18 +73,6 @@ public class ProductServiceImpl implements ProductService {
         productRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Product not found"));
         productRepository.deleteById(id);
-    }
-
-    @Override
-    public List<ProductResponse> search(String keyword) {
-        String searchKeyword = (keyword == null || keyword.trim().isEmpty()) 
-            ? "" 
-            : keyword;
-        
-        return productRepository.findByNameContainingIgnoreCase(searchKeyword)
-                .stream()
-                .map(this::mapToResponse)
-                .toList();
     }
 
     @Override
