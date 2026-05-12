@@ -1,20 +1,9 @@
-spring.application.name=inventory-api
-
-# Database
 spring.datasource.url=jdbc:postgresql://localhost:5432/inventory_db
-# Sensitive: keep in application-local.properties
 spring.datasource.username=postgres
 spring.datasource.password=your_password_here
 
-# JPA
 spring.jpa.hibernate.ddl-auto=update
 spring.jpa.show-sql=true
 spring.jpa.properties.hibernate.format_sql=true
 
-# Server
-server.port=8080
-
-# JWT
-jwt.expiration-ms=86400000
-# Sensitive: keep in application-local.properties
 jwt.secret=your_jwt_secret_here
