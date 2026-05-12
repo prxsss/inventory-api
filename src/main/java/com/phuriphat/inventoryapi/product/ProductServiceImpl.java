@@ -44,6 +44,16 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    public Page<ProductResponse> getAll(String keyword, Pageable pageable) {
+        String searchKeyword = (keyword == null || keyword.trim().isEmpty())
+                ? ""
+                : keyword;
+
+        Page<Product> products = productRepository.findByNameContainingIgnoreCase(searchKeyword, pageable);
+        return products.map(this::mapToResponse);
+    }
+
+    @Override
     public ProductResponse getById(Long id) {
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Product not found"));
@@ -73,16 +83,6 @@ public class ProductServiceImpl implements ProductService {
         productRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Product not found"));
         productRepository.deleteById(id);
-    }
-
-    @Override
-    public Page<ProductResponse> search(String keyword, Pageable pageable) {
-        String searchKeyword = (keyword == null || keyword.trim().isEmpty()) 
-            ? "" 
-            : keyword;
-        
-        Page<Product> products = productRepository.findByNameContainingIgnoreCase(searchKeyword, pageable);
-        return products.map(this::mapToResponse);
     }
 
     private ProductResponse mapToResponse(Product product) {

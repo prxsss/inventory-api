@@ -37,14 +37,14 @@ public class ProductController {
     }
 
     @GetMapping
-    public ResponseEntity<ApiResponse<PaginationResponse<ProductResponse>>> search(
+    public ResponseEntity<ApiResponse<PaginationResponse<ProductResponse>>> getAll(
             @RequestParam(required = false) String keyword,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "id") String sortBy,
             @RequestParam(defaultValue = "ASC") Sort.Direction direction) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sortBy));
-        Page<ProductResponse> responses = productService.search(keyword, pageable);
+        Page<ProductResponse> responses = productService.getAll(keyword, pageable);
         PaginationResponse<ProductResponse> paginationResponse = PaginationHelper.toPaginationResponse(responses);
         ApiResponse<PaginationResponse<ProductResponse>> apiResponse = ApiResponse.<PaginationResponse<ProductResponse>>builder()
                 .success(true)
