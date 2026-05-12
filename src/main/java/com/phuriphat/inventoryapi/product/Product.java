@@ -1,12 +1,12 @@
 package com.phuriphat.inventoryapi.product;
 
 import com.phuriphat.inventoryapi.category.Category;
+import com.phuriphat.inventoryapi.common.BaseEntity;
 import com.phuriphat.inventoryapi.stock.StockTransaction;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -16,7 +16,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Product {
+public class Product extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -46,10 +46,4 @@ public class Product {
     @OneToMany(mappedBy = "product")
     private List<StockTransaction> transactions;
 
-    private LocalDateTime createdAt;
-
-    @PrePersist
-    public void prePersist() {
-        this.createdAt = LocalDateTime.now();
-    }
 }

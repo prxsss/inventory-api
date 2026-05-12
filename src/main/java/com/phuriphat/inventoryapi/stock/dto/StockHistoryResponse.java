@@ -23,4 +23,6 @@ public class StockHistoryResponse {
     private String note;
 
     private LocalDateTime createdAt;
+
+    private LocalDateTime updatedAt;
 }

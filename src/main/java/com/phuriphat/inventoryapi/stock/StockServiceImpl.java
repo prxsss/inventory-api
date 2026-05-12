@@ -12,7 +12,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
@@ -36,7 +35,6 @@ public class StockServiceImpl implements StockService {
                 .type(TransactionType.IN)
                 .quantity(stockRequest.getQuantity())
                 .note(stockRequest.getNote())
-                .createdAt(LocalDateTime.now())
                 .build();
 
         stockTransactionRepository.save(stockTransaction);
@@ -61,7 +59,6 @@ public class StockServiceImpl implements StockService {
                 .type(TransactionType.OUT)
                 .quantity(stockRequest.getQuantity())
                 .note(stockRequest.getNote())
-                .createdAt(LocalDateTime.now())
                 .build();
 
         stockTransactionRepository.save(stockTransaction);
@@ -79,6 +76,7 @@ public class StockServiceImpl implements StockService {
                         .quantity(stockTransaction.getQuantity())
                         .note(stockTransaction.getNote())
                         .createdAt(stockTransaction.getCreatedAt())
+                        .updatedAt(stockTransaction.getUpdatedAt())
                         .build());
     }
 
@@ -94,6 +92,7 @@ public class StockServiceImpl implements StockService {
                         .quantity(stockTransaction.getQuantity())
                         .note(stockTransaction.getNote())
                         .createdAt(stockTransaction.getCreatedAt())
+                        .updatedAt(stockTransaction.getUpdatedAt())
                         .build()
                 );
     }

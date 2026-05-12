@@ -96,6 +96,7 @@ public class ProductServiceImpl implements ProductService {
                 .lowStockThreshold(product.getLowStockThreshold())
                 .categoryName(product.getCategory().getName())
                 .createdAt(product.getCreatedAt())
+                .updatedAt(product.getUpdatedAt())
                 .build();
     }
 }

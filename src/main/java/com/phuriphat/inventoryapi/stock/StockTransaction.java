@@ -1,10 +1,9 @@
 package com.phuriphat.inventoryapi.stock;
 
+import com.phuriphat.inventoryapi.common.BaseEntity;
 import com.phuriphat.inventoryapi.product.Product;
 import jakarta.persistence.*;
 import lombok.*;
-
-import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "stock_transactions")
@@ -13,7 +12,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class StockTransaction {
+public class StockTransaction extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,6 +28,4 @@ public class StockTransaction {
     private Integer quantity;
 
     private String note;
-
-    private LocalDateTime createdAt;
 }
