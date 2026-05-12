@@ -14,7 +14,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
         FROM Product p
         WHERE p.quantity <= p.lowStockThreshold
     """)
-    List<Product> findLowStockProducts();
+    Page<Product> findLowStockProducts(Pageable pageable);
 
     @Query("""
         SELECT COUNT(p)

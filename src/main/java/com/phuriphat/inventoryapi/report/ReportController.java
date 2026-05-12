@@ -1,15 +1,19 @@
 package com.phuriphat.inventoryapi.report;
 
 import com.phuriphat.inventoryapi.common.ApiResponse;
+import com.phuriphat.inventoryapi.common.PaginationHelper;
+import com.phuriphat.inventoryapi.common.PaginationResponse;
 import com.phuriphat.inventoryapi.report.dto.InventorySummaryResponse;
 import com.phuriphat.inventoryapi.report.dto.LowStockProductResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/reports")
@@ -19,26 +23,30 @@ public class ReportController {
     private final ReportService reportService;
 
     @GetMapping("/low-stock")
-    public ResponseEntity<ApiResponse<List<LowStockProductResponse>>> getLowStockProducts() {
-        List<LowStockProductResponse> response = reportService.getLowStockProducts();
-        ApiResponse<List<LowStockProductResponse>> apiResponse = ApiResponse.<List<LowStockProductResponse>>builder()
+    public ResponseEntity<ApiResponse<PaginationResponse<LowStockProductResponse>>> getLowStockProducts(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<LowStockProductResponse> response = reportService.getLowStockProducts(pageable);
+        PaginationResponse<LowStockProductResponse> paginationResponse = PaginationHelper.toPaginationResponse(response);
+        ApiResponse<PaginationResponse<LowStockProductResponse>> apiResponse = ApiResponse.<PaginationResponse<LowStockProductResponse>>builder()
                 .success(true)
-                .message("Success")
-                .data(response)
+                .message("Low stock products fetched successfully")
+                .data(paginationResponse)
                 .build();
 
         return ResponseEntity.ok(apiResponse);
     }
 
     @GetMapping("/summary")
-      ResponseEntity<ApiResponse<InventorySummaryResponse>> getInventorySummary() {
-          InventorySummaryResponse response = reportService.getInventorySummary();
-          ApiResponse<InventorySummaryResponse> apiResponse = ApiResponse.<InventorySummaryResponse>builder()
-                     .success(true)
-                     .message("Success")
-                     .data(response)
-                     .build();
+    public ResponseEntity<ApiResponse<InventorySummaryResponse>> getInventorySummary() {
+        InventorySummaryResponse response = reportService.getInventorySummary();
+        ApiResponse<InventorySummaryResponse> apiResponse = ApiResponse.<InventorySummaryResponse>builder()
+                    .success(true)
+                    .message("Success")
+                    .data(response)
+                    .build();
 
-          return ResponseEntity.ok(apiResponse);
+        return ResponseEntity.ok(apiResponse);
     }
 }

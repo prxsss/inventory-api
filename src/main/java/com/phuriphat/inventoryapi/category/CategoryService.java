@@ -2,13 +2,13 @@ package com.phuriphat.inventoryapi.category;
 
 import com.phuriphat.inventoryapi.category.dto.CategoryResponse;
 import com.phuriphat.inventoryapi.category.dto.CreateCategoryRequest;
-
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface CategoryService {
     CategoryResponse create(CreateCategoryRequest createCategoryRequest);
 
-    List<CategoryResponse> findAll();
+    Page<CategoryResponse> findAll(Pageable pageable);
 
     CategoryResponse findById(Long id);
 

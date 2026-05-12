@@ -1,6 +1,8 @@
 package com.phuriphat.inventoryapi.product;
 
 import com.phuriphat.inventoryapi.common.ApiResponse;
+import com.phuriphat.inventoryapi.common.PaginationHelper;
+import com.phuriphat.inventoryapi.common.PaginationResponse;
 import com.phuriphat.inventoryapi.product.dto.CreateProductRequest;
 import com.phuriphat.inventoryapi.product.dto.ProductResponse;
 import jakarta.validation.Valid;
@@ -33,7 +35,7 @@ public class ProductController {
     }
 
     @GetMapping
-    public ResponseEntity<ApiResponse<Page<ProductResponse>>> search(
+    public ResponseEntity<ApiResponse<PaginationResponse<ProductResponse>>> search(
             @RequestParam(required = false) String keyword,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
@@ -41,10 +43,11 @@ public class ProductController {
             @RequestParam(defaultValue = "ASC") Sort.Direction direction) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sortBy));
         Page<ProductResponse> responses = productService.search(keyword, pageable);
-        ApiResponse<Page<ProductResponse>> apiResponse = ApiResponse.<Page<ProductResponse>>builder()
+        PaginationResponse<ProductResponse> paginationResponse = PaginationHelper.toPaginationResponse(responses);
+        ApiResponse<PaginationResponse<ProductResponse>> apiResponse = ApiResponse.<PaginationResponse<ProductResponse>>builder()
                 .success(true)
-                .message("Success")
-                .data(responses)
+                .message("Products fetched successfully")
+                .data(paginationResponse)
                 .build();
 
         return ResponseEntity.ok(apiResponse);

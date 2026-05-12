@@ -4,9 +4,9 @@ import com.phuriphat.inventoryapi.category.dto.CategoryResponse;
 import com.phuriphat.inventoryapi.category.dto.CreateCategoryRequest;
 import com.phuriphat.inventoryapi.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -26,11 +26,9 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public List<CategoryResponse> findAll() {
-        return categoryRepository.findAll()
-                .stream()
-                .map(this::mapToResponse)
-                .toList();
+    public Page<CategoryResponse> findAll(Pageable pageable) {
+        return categoryRepository.findAll(pageable)
+                .map(this::mapToResponse);
     }
 
     @Override

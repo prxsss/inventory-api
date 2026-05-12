@@ -5,9 +5,9 @@ import com.phuriphat.inventoryapi.product.ProductRepository;
 import com.phuriphat.inventoryapi.report.dto.InventorySummaryResponse;
 import com.phuriphat.inventoryapi.report.dto.LowStockProductResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -17,17 +17,15 @@ public class ReportServiceImpl implements ReportService {
     private final CategoryRepository  categoryRepository;
 
     @Override
-    public List<LowStockProductResponse> getLowStockProducts() {
-        return productRepository.findLowStockProducts()
-                .stream()
+    public Page<LowStockProductResponse> getLowStockProducts(Pageable pageable) {
+        return productRepository.findLowStockProducts(pageable)
                 .map(product -> LowStockProductResponse.builder()
                         .id(product.getId())
                         .name(product.getName())
                         .quantity(product.getQuantity())
                         .lowStockThreshold(product.getLowStockThreshold())
                         .build()
-                )
-                .toList();
+                );
     }
 
     @Override

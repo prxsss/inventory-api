@@ -3,13 +3,16 @@ package com.phuriphat.inventoryapi.category;
 import com.phuriphat.inventoryapi.category.dto.CategoryResponse;
 import com.phuriphat.inventoryapi.category.dto.CreateCategoryRequest;
 import com.phuriphat.inventoryapi.common.ApiResponse;
+import com.phuriphat.inventoryapi.common.PaginationHelper;
+import com.phuriphat.inventoryapi.common.PaginationResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/categories")
@@ -30,12 +33,16 @@ public class CategoryController {
     }
 
     @GetMapping
-    public ResponseEntity<ApiResponse<List<CategoryResponse>>> getAll() {
-        List<CategoryResponse> response = categoryService.findAll();
-        ApiResponse<List<CategoryResponse>> apiResponse = ApiResponse.<List<CategoryResponse>>builder()
+    public ResponseEntity<ApiResponse<PaginationResponse<CategoryResponse>>> getAll(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<CategoryResponse> response = categoryService.findAll(pageable);
+        PaginationResponse<CategoryResponse> paginationResponse = PaginationHelper.toPaginationResponse(response);
+        ApiResponse<PaginationResponse<CategoryResponse>> apiResponse = ApiResponse.<PaginationResponse<CategoryResponse>>builder()
                 .success(true)
-                .message("Success")
-                .data(response)
+                .message("Categories fetched successfully")
+                .data(paginationResponse)
                 .build();
 
         return ResponseEntity.ok(apiResponse);

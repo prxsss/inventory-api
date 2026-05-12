@@ -8,17 +8,18 @@ import com.phuriphat.inventoryapi.stock.dto.StockRequest;
 import com.phuriphat.inventoryapi.stock.dto.StockTransactionResponse;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class StockServiceImpl implements StockService {
 
     private final ProductRepository productRepository;
-    private final StockTransactionRepository  stockTransactionRepository;
+    private final StockTransactionRepository stockTransactionRepository;
 
     @Override
     @Transactional
@@ -69,9 +70,8 @@ public class StockServiceImpl implements StockService {
     }
 
     @Override
-    public List<StockTransactionResponse> getHistory() {
-        return stockTransactionRepository.findAll()
-                .stream()
+        public Page<StockTransactionResponse> getHistory(Pageable pageable) {
+        return stockTransactionRepository.findAll(pageable)
                 .map(stockTransaction -> StockTransactionResponse.builder()
                         .id(stockTransaction.getId())
                         .productName(stockTransaction.getProduct().getName())
@@ -79,25 +79,22 @@ public class StockServiceImpl implements StockService {
                         .quantity(stockTransaction.getQuantity())
                         .note(stockTransaction.getNote())
                         .createdAt(stockTransaction.getCreatedAt())
-                        .build())
-                .toList();
+                        .build());
     }
 
     @Override
-    public List<StockHistoryResponse> getHistoryByProductId(Long productId) {
+    public Page<StockHistoryResponse> getHistoryByProductId(Long productId, Pageable pageable) {
         productRepository.findById(productId)
                 .orElseThrow(() -> new ResourceNotFoundException("Product not found"));
 
-        return stockTransactionRepository.findByProductIdOrderByCreatedAtDesc(productId)
-                .stream()
+        return stockTransactionRepository.findByProductIdOrderByCreatedAtDesc(productId, pageable)
                 .map(stockTransaction -> StockHistoryResponse.builder()
-                    .id(stockTransaction.getId())
-                    .type(stockTransaction.getType())
-                    .quantity(stockTransaction.getQuantity())
-                    .note(stockTransaction.getNote())
-                    .createdAt(stockTransaction.getCreatedAt())
-                    .build()
-                )
-                .toList();
+                        .id(stockTransaction.getId())
+                        .type(stockTransaction.getType())
+                        .quantity(stockTransaction.getQuantity())
+                        .note(stockTransaction.getNote())
+                        .createdAt(stockTransaction.getCreatedAt())
+                        .build()
+                );
     }
 }

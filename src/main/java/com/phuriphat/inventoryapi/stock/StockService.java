@@ -3,8 +3,8 @@ package com.phuriphat.inventoryapi.stock;
 import com.phuriphat.inventoryapi.stock.dto.StockHistoryResponse;
 import com.phuriphat.inventoryapi.stock.dto.StockRequest;
 import com.phuriphat.inventoryapi.stock.dto.StockTransactionResponse;
-
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface StockService {
 
@@ -12,7 +12,7 @@ public interface StockService {
 
     void stockOut(StockRequest stockRequest);
 
-    List<StockTransactionResponse> getHistory();
+    Page<StockTransactionResponse> getHistory(Pageable pageable);
 
-    List<StockHistoryResponse> getHistoryByProductId(Long productId);
+    Page<StockHistoryResponse> getHistoryByProductId(Long productId, Pageable pageable);
 }
