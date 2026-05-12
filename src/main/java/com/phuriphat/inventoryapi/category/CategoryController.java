@@ -5,6 +5,7 @@ import com.phuriphat.inventoryapi.category.dto.CreateCategoryRequest;
 import com.phuriphat.inventoryapi.common.ApiResponse;
 import com.phuriphat.inventoryapi.common.PaginationHelper;
 import com.phuriphat.inventoryapi.common.PaginationResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/categories")
 @RequiredArgsConstructor
+@SecurityRequirement(name = "bearerAuth")
 public class CategoryController {
     private final CategoryService categoryService;
 

@@ -5,6 +5,7 @@ import com.phuriphat.inventoryapi.common.PaginationHelper;
 import com.phuriphat.inventoryapi.common.PaginationResponse;
 import com.phuriphat.inventoryapi.report.dto.InventorySummaryResponse;
 import com.phuriphat.inventoryapi.report.dto.LowStockProductResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/reports")
 @RequiredArgsConstructor
+@SecurityRequirement(name = "bearerAuth")
 public class ReportController {
 
     private final ReportService reportService;

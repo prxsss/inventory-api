@@ -5,6 +5,7 @@ import com.phuriphat.inventoryapi.common.PaginationHelper;
 import com.phuriphat.inventoryapi.common.PaginationResponse;
 import com.phuriphat.inventoryapi.product.dto.CreateProductRequest;
 import com.phuriphat.inventoryapi.product.dto.ProductResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/products")
 @RequiredArgsConstructor
+@SecurityRequirement(name = "bearerAuth")
 public class ProductController {
     private final ProductService productService;
 
