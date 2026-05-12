@@ -2,6 +2,7 @@ package com.phuriphat.inventoryapi.category;
 
 import com.phuriphat.inventoryapi.category.dto.CategoryResponse;
 import com.phuriphat.inventoryapi.category.dto.CreateCategoryRequest;
+import com.phuriphat.inventoryapi.exception.DuplicateResourceException;
 import com.phuriphat.inventoryapi.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -16,6 +17,10 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public CategoryResponse create(CreateCategoryRequest createCategoryRequest) {
+        if (categoryRepository.existsByNameIgnoreCase(createCategoryRequest.getName())) {
+            throw new DuplicateResourceException("Category with name " + createCategoryRequest.getName() + " already exists");
+        }
+
         Category category = Category.builder()
                 .name(createCategoryRequest.getName())
                 .build();

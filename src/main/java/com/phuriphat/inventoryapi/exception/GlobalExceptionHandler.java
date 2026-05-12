@@ -66,6 +66,21 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponse);
     }
 
+    @ExceptionHandler(DuplicateResourceException.class)
+    public ResponseEntity<ApiErrorResponse> handleDuplicateResourceException(
+            DuplicateResourceException exception,
+            HttpServletRequest request) {
+        ApiErrorResponse errorResponse = buildErrorResponse(
+                HttpStatus.CONFLICT,
+                "DUPLICATE_RESOURCE",
+                exception.getMessage(),
+                request.getRequestURI(),
+                null
+        );
+
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponse);
+    }
+
     @ExceptionHandler(InsufficientStockException.class)
     public ResponseEntity<ApiErrorResponse> handleInsufficientStockException(
             InsufficientStockException exception,

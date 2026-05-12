@@ -2,6 +2,7 @@ package com.phuriphat.inventoryapi.product;
 
 import com.phuriphat.inventoryapi.category.Category;
 import com.phuriphat.inventoryapi.category.CategoryRepository;
+import com.phuriphat.inventoryapi.exception.DuplicateResourceException;
 import com.phuriphat.inventoryapi.exception.ResourceNotFoundException;
 import com.phuriphat.inventoryapi.product.dto.CreateProductRequest;
 import com.phuriphat.inventoryapi.product.dto.ProductResponse;
@@ -23,6 +24,10 @@ public class ProductServiceImpl implements ProductService {
     public ProductResponse create(CreateProductRequest createProductRequest) {
          Category category = categoryRepository.findById(createProductRequest.getCategoryId())
                  .orElseThrow(() -> new ResourceNotFoundException("Category not found"));
+
+         if (productRepository.existsBySkuIgnoreCase(createProductRequest.getSku())) {
+                throw new DuplicateResourceException("Product with sku " + createProductRequest.getSku() + " already exists");
+         }
 
         Product product = Product.builder()
                 .sku(createProductRequest.getSku())
