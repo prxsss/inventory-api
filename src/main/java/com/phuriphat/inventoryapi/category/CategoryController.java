@@ -36,10 +36,11 @@ public class CategoryController {
 
     @GetMapping
     public ResponseEntity<ApiResponse<PaginationResponse<CategoryResponse>>> getAll(
+            @RequestParam(required = false) String keyword,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
         Pageable pageable = PageRequest.of(page, size);
-        Page<CategoryResponse> response = categoryService.findAll(pageable);
+        Page<CategoryResponse> response = categoryService.findAll(keyword, pageable);
         PaginationResponse<CategoryResponse> paginationResponse = PaginationHelper.toPaginationResponse(response);
         ApiResponse<PaginationResponse<CategoryResponse>> apiResponse = ApiResponse.<PaginationResponse<CategoryResponse>>builder()
                 .success(true)

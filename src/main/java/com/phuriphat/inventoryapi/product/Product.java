@@ -4,10 +4,10 @@ import com.phuriphat.inventoryapi.category.Category;
 import com.phuriphat.inventoryapi.common.BaseEntity;
 import com.phuriphat.inventoryapi.stock.StockTransaction;
 import jakarta.persistence.*;
-import lombok.*;
-
 import java.math.BigDecimal;
 import java.util.List;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 @Entity
 @Table(name = "products")
@@ -15,7 +15,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
+@SuperBuilder
 public class Product extends BaseEntity {
 
     @Id
@@ -45,5 +45,4 @@ public class Product extends BaseEntity {
 
     @OneToMany(mappedBy = "product")
     private List<StockTransaction> transactions;
-
 }

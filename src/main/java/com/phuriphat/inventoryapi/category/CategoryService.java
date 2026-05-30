@@ -8,7 +8,7 @@ import org.springframework.data.domain.Pageable;
 public interface CategoryService {
     CategoryResponse create(CreateCategoryRequest createCategoryRequest);
 
-    Page<CategoryResponse> findAll(Pageable pageable);
+    Page<CategoryResponse> findAll(String keyword, Pageable pageable);
 
     CategoryResponse findById(Long id);
 

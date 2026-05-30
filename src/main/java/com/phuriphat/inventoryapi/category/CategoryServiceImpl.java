@@ -31,8 +31,12 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public Page<CategoryResponse> findAll(Pageable pageable) {
-        return categoryRepository.findAll(pageable)
+    public Page<CategoryResponse> findAll(String keyword, Pageable pageable) {
+        String searchKeyword = (keyword == null || keyword.trim().isEmpty())
+                ? ""
+                : keyword;
+
+        return categoryRepository.findByNameContainingIgnoreCase(searchKeyword, pageable)
                 .map(this::mapToResponse);
     }
 
@@ -67,6 +71,7 @@ public class CategoryServiceImpl implements CategoryService {
         return CategoryResponse.builder()
                 .id(category.getId())
                 .name(category.getName())
+                .createdAt(category.getCreatedAt())
                 .build();
     }
 }
