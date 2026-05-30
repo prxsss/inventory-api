@@ -4,7 +4,7 @@ services:
     container_name: inventory-api
 
     ports:
-      - '8080:8080'
+      - "8080:8080"
 
     environment:
       SPRING_PROFILES_ACTIVE: prod
@@ -29,7 +29,7 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
 
     ports:
-      - '5432:5432'
+      - "5432:5432"
 
     volumes:
       - postgres_data:/var/lib/postgresql/data
