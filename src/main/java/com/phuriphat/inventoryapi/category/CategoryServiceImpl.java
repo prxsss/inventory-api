@@ -1,5 +1,6 @@
 package com.phuriphat.inventoryapi.category;
 
+import com.phuriphat.inventoryapi.category.dto.CategoryOptionProjection;
 import com.phuriphat.inventoryapi.category.dto.CategoryResponse;
 import com.phuriphat.inventoryapi.category.dto.CreateCategoryRequest;
 import com.phuriphat.inventoryapi.exception.DuplicateResourceException;
@@ -8,6 +9,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -46,6 +49,11 @@ public class CategoryServiceImpl implements CategoryService {
                 .orElseThrow(() -> new ResourceNotFoundException("Category not found"));
 
         return mapToResponse(category);
+    }
+
+    @Override
+    public List<CategoryOptionProjection> findAllForOption() {
+        return categoryRepository.findAllProjectedBy();
     }
 
     @Override

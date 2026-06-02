@@ -1,5 +1,6 @@
 package com.phuriphat.inventoryapi.category;
 
+import com.phuriphat.inventoryapi.category.dto.CategoryOptionProjection;
 import com.phuriphat.inventoryapi.category.dto.CategoryResponse;
 import com.phuriphat.inventoryapi.category.dto.CreateCategoryRequest;
 import com.phuriphat.inventoryapi.common.ApiResponse;
@@ -14,6 +15,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/categories")
@@ -55,6 +58,18 @@ public class CategoryController {
     public ResponseEntity<ApiResponse<CategoryResponse>> getById(@PathVariable Long id) {
         CategoryResponse response = categoryService.findById(id);
         ApiResponse<CategoryResponse> apiResponse = ApiResponse.<CategoryResponse>builder()
+                .success(true)
+                .message("Success")
+                .data(response)
+                .build();
+
+        return ResponseEntity.ok(apiResponse);
+    }
+
+    @GetMapping("/options")
+    public ResponseEntity<ApiResponse<List<CategoryOptionProjection>>> getOptions() {
+        List<CategoryOptionProjection> response = categoryService.findAllForOption();
+        ApiResponse<List<CategoryOptionProjection>> apiResponse = ApiResponse.<List<CategoryOptionProjection>>builder()
                 .success(true)
                 .message("Success")
                 .data(response)

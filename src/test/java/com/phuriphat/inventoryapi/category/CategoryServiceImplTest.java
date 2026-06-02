@@ -1,5 +1,6 @@
 package com.phuriphat.inventoryapi.category;
 
+import com.phuriphat.inventoryapi.category.dto.CategoryOptionProjection;
 import com.phuriphat.inventoryapi.category.dto.CategoryResponse;
 import com.phuriphat.inventoryapi.category.dto.CreateCategoryRequest;
 import com.phuriphat.inventoryapi.exception.DuplicateResourceException;
@@ -193,6 +194,36 @@ class CategoryServiceImplTest {
         assertEquals("Category not found", exception.getMessage(), "Exception message should match");
 
         verify(categoryRepository, times(1)).findById(99L);
+    }
+
+    @Test
+    void getAllForOption_shouldReturnListOfCategoryOptionProjection() {
+        // GIVEN
+        List<CategoryOptionProjection> categoryOptions = List.of(
+                CategoryOptionProjection.builder()
+                        .id(1L)
+                        .name("First Category")
+                        .build(),
+                CategoryOptionProjection.builder()
+                        .id(2L)
+                        .name("Second Category")
+                        .build()
+        );
+
+        when(categoryRepository.findAllProjectedBy()).thenReturn(categoryOptions);
+
+        // WHEN
+        List<CategoryOptionProjection> result = categoryService.findAllForOption();
+
+        // THEN
+        assertNotNull(result, "Result should not be null");
+        assertEquals(categoryOptions.size(), result.size(), "Size of result should match");
+        assertEquals(1L, result.get(0).getId(), "First category ID should match");
+        assertEquals("First Category", result.get(0).getName(), "First category name should match");
+        assertEquals(2L, result.get(1).getId(), "Second category ID should match");
+        assertEquals("Second Category", result.get(1).getName());
+
+        verify(categoryRepository, times(1)).findAllProjectedBy();
     }
 
     @Test
