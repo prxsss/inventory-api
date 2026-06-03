@@ -1,5 +1,6 @@
 package com.phuriphat.inventoryapi.stock;
 
+import com.phuriphat.inventoryapi.exception.InsufficientStockException;
 import com.phuriphat.inventoryapi.exception.ResourceNotFoundException;
 import com.phuriphat.inventoryapi.product.Product;
 import com.phuriphat.inventoryapi.product.ProductRepository;
