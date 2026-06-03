@@ -1,8 +1,11 @@
 package com.phuriphat.inventoryapi.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.phuriphat.inventoryapi.common.ApiErrorResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -18,6 +21,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Configuration
@@ -25,8 +29,9 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    private final JwtAuthFilter  jwtAuthFilter;
+    private final JwtAuthFilter jwtAuthFilter;
     private final UserDetailsService userDetailsService;
+    private final ObjectMapper objectMapper;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -62,7 +67,48 @@ public class SecurityConfig {
                 )
             )
             .authenticationProvider(authenticationProvider())
-            .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+            .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
+
+            .exceptionHandling(ex -> ex
+                .authenticationEntryPoint((request, response, authException) -> {
+                    ApiErrorResponse.ErrorDetail errorDetail = ApiErrorResponse.ErrorDetail.builder()
+                            .code("UNAUTHORIZED")
+                            .message("Full authentication is required to access this resource")
+                            .timestamp(LocalDateTime.now())
+                            .path(request.getRequestURI())
+                            .fieldErrors(null)
+                            .build();
+
+                    ApiErrorResponse errorResponse = ApiErrorResponse.builder()
+                            .success(false)
+                            .statusCode(HttpStatus.UNAUTHORIZED.value())
+                            .error(errorDetail)
+                            .build();
+
+                    response.setContentType("application/json");
+                    response.setStatus(HttpStatus.UNAUTHORIZED.value());
+                    objectMapper.writeValue(response.getOutputStream(), errorResponse);
+                })
+                .accessDeniedHandler((request, response, accessDeniedException) -> {
+                    ApiErrorResponse.ErrorDetail errorDetail = ApiErrorResponse.ErrorDetail.builder()
+                            .code("ACCESS_DENIED")
+                            .message("Access denied")
+                            .timestamp(LocalDateTime.now())
+                            .path(request.getRequestURI())
+                            .fieldErrors(null)
+                            .build();
+
+                    ApiErrorResponse errorResponse = ApiErrorResponse.builder()
+                            .success(false)
+                            .statusCode(HttpStatus.FORBIDDEN.value())
+                            .error(errorDetail)
+                            .build();
+
+                    response.setContentType("application/json");
+                    response.setStatus(HttpStatus.FORBIDDEN.value());
+                    objectMapper.writeValue(response.getOutputStream(), errorResponse);
+                })
+            );
 
         return http.build();
     }
