@@ -5,11 +5,14 @@ import com.phuriphat.inventoryapi.category.CategoryRepository;
 import com.phuriphat.inventoryapi.exception.DuplicateResourceException;
 import com.phuriphat.inventoryapi.exception.ResourceNotFoundException;
 import com.phuriphat.inventoryapi.product.dto.CreateProductRequest;
+import com.phuriphat.inventoryapi.product.dto.ProductOptionProjection;
 import com.phuriphat.inventoryapi.product.dto.ProductResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -59,6 +62,11 @@ public class ProductServiceImpl implements ProductService {
                 .orElseThrow(() -> new ResourceNotFoundException("Product not found"));
 
         return mapToResponse(product);
+    }
+
+    @Override
+    public List<ProductOptionProjection> findAllForOption() {
+        return productRepository.findAllProjectedBy();
     }
 
     @Override

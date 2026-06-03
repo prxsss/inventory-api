@@ -4,6 +4,7 @@ import com.phuriphat.inventoryapi.common.ApiResponse;
 import com.phuriphat.inventoryapi.common.PaginationHelper;
 import com.phuriphat.inventoryapi.common.PaginationResponse;
 import com.phuriphat.inventoryapi.product.dto.CreateProductRequest;
+import com.phuriphat.inventoryapi.product.dto.ProductOptionProjection;
 import com.phuriphat.inventoryapi.product.dto.ProductResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
@@ -15,6 +16,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 
 @RestController
@@ -59,6 +62,18 @@ public class ProductController {
     public ResponseEntity<ApiResponse<ProductResponse>> getById(@PathVariable Long id) {
         ProductResponse response =  productService.getById(id);
         ApiResponse<ProductResponse> apiResponse = ApiResponse.<ProductResponse>builder()
+                .success(true)
+                .message("Success")
+                .data(response)
+                .build();
+
+        return ResponseEntity.ok(apiResponse);
+    }
+
+    @GetMapping("/options")
+    public ResponseEntity<ApiResponse<List<ProductOptionProjection>>> getOptions() {
+        List<ProductOptionProjection> response = productService.findAllForOption();
+        ApiResponse<List<ProductOptionProjection>> apiResponse = ApiResponse.<List<ProductOptionProjection>>builder()
                 .success(true)
                 .message("Success")
                 .data(response)
