@@ -49,7 +49,7 @@ public class StockServiceImpl implements StockService {
                 .orElseThrow(() -> new ResourceNotFoundException("Product not found"));
 
         if (product.getQuantity() < stockRequest.getQuantity()) {
-            throw new RuntimeException("Insufficient stock");
+            throw new InsufficientStockException("Insufficient stock");
         }
 
         product.setQuantity(product.getQuantity() - stockRequest.getQuantity());
@@ -68,7 +68,7 @@ public class StockServiceImpl implements StockService {
 
     @Override
         public Page<StockTransactionResponse> getHistory(Pageable pageable) {
-        return stockTransactionRepository.findAll(pageable)
+        return stockTransactionRepository.findAllByOrderByCreatedAtDesc(pageable)
                 .map(stockTransaction -> StockTransactionResponse.builder()
                         .id(stockTransaction.getId())
                         .productName(stockTransaction.getProduct().getName())
