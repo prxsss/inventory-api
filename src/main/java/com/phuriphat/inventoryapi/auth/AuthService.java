@@ -2,9 +2,11 @@ package com.phuriphat.inventoryapi.auth;
 
 import com.phuriphat.inventoryapi.auth.dto.AuthResponse;
 import com.phuriphat.inventoryapi.auth.dto.LoginRequest;
+import com.phuriphat.inventoryapi.auth.dto.ProfileResponse;
 import com.phuriphat.inventoryapi.auth.dto.RegisterRequest;
 import com.phuriphat.inventoryapi.exception.DuplicateEmailException;
 import com.phuriphat.inventoryapi.exception.InvalidCredentialsException;
+import com.phuriphat.inventoryapi.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -58,6 +60,19 @@ public class AuthService {
                 .token(token)
                 .email(user.getEmail())
                 .name(user.getName())
+                .build();
+    }
+
+    public ProfileResponse getProfile(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
+        return ProfileResponse.builder()
+                .id(user.getId())
+                .name(user.getName())
+                .email(user.getEmail())
+                .role(user.getRole())
+                .createdAt(user.getCreatedAt())
                 .build();
     }
 }

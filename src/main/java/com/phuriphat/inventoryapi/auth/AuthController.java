@@ -2,11 +2,16 @@ package com.phuriphat.inventoryapi.auth;
 
 import com.phuriphat.inventoryapi.auth.dto.AuthResponse;
 import com.phuriphat.inventoryapi.auth.dto.LoginRequest;
+import com.phuriphat.inventoryapi.auth.dto.ProfileResponse;
 import com.phuriphat.inventoryapi.auth.dto.RegisterRequest;
 import com.phuriphat.inventoryapi.common.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -41,5 +46,18 @@ public class AuthController {
                 .build();
 
         return  ResponseEntity.ok(apiResponse);
+    }
+
+    @GetMapping("/profile")
+    @SecurityRequirement(name = "bearerAuth")
+    public ResponseEntity<ApiResponse<ProfileResponse>> getProfile(@AuthenticationPrincipal UserDetails userDetails) {
+        ProfileResponse response = authService.getProfile(userDetails.getUsername());
+        ApiResponse<ProfileResponse> apiResponse = ApiResponse.<ProfileResponse>builder()
+                .success(true)
+                .message("Profile fetched successfully")
+                .data(response)
+                .build();
+
+        return ResponseEntity.ok(apiResponse);
     }
 }
