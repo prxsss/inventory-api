@@ -7,8 +7,8 @@ Inventory Management REST API built with Spring Boot.
 - [Features](#features)
 - [Tech Stack](#tech-stack)
 - [Prerequisites](#prerequisites)
-- [Getting Started](#getting-started)
-- [Environment Variables](#environment-variables)
+- [Local Development](#local-development)
+- [Production](#production)
 - [ERD](#erd)
 - [Authentication](#authentication)
 - [API Documentation](#api-documentation)
@@ -40,7 +40,7 @@ Make sure you have the following installed before running the project:
 - [Maven 3.9+](https://maven.apache.org/download.cgi)
 - [Docker & Docker Compose](https://www.docker.com/)
 
-## Getting Started
+## Local Development
 
 **1. Clone the repository**
 
@@ -49,44 +49,51 @@ git clone https://github.com/prxsss/inventory-api.git
 cd inventory-api
 ```
 
-**2. Configure environment variables**
+**2. Configure the development profile**
+
+```bash
+cp src/main/resources/application-dev.properties.example src/main/resources/application-dev.properties
+```
+
+Edit [`src/main/resources/application-dev.properties`](src/main/resources/application-dev.properties) and set the local database and JWT values. Use [`application-dev.properties.example`](src/main/resources/application-dev.properties.example) as the reference configuration.
+
+The default active profile is `dev`. Make sure Docker is running, then start Spring Boot:
+
+```bash
+./mvnw spring-boot:run
+```
+
+Spring Boot Docker Compose support automatically starts the PostgreSQL service defined in `compose.yaml`. You do not need to run Docker Compose separately.
+
+> `compose.yaml` currently reads `POSTGRES_DB`, `POSTGRES_USER`, and `POSTGRES_PASSWORD` from a root `.env` file. These values must match the datasource values in `application-dev.properties`.
+
+The API will be available at `http://localhost:8080`.
+
+## Production
+
+**1. Configure environment variables**
 
 ```bash
 cp .env.example .env
 ```
 
-Then edit `.env` with your own values (see [Environment Variables](#environment-variables)).
-
-**3. Start the database**
-
-```bash
-docker compose -f compose.dev.yaml up -d
-```
-
-**4. Run the application**
-
-```bash
-mvn spring-boot:run
-```
-
-## Environment Variables
-
-Create a `.env` file in the project root based on `.env.example`:
+Edit `.env` with the production database and JWT values:
 
 ```env
-# Database
-DB_HOST=localhost
-DB_PORT=5432
-DB_NAME=inventory_db
+DB_URL=jdbc:postgresql://your-db-host:5432/inventory_db
 DB_USERNAME=your_db_user
 DB_PASSWORD=your_db_password
-
-# JWT
-JWT_SECRET=your_jwt_secret_key
+JWT_SECRET=your_production_jwt_secret
 JWT_EXPIRATION_MS=86400000
 ```
 
-The API will be available at `http://localhost:8080`
+**2. Build and run the production container**
+
+```bash
+docker compose -f compose.prod.yaml up -d
+```
+
+The Compose configuration sets `SPRING_PROFILES_ACTIVE=prod` and passes the values from `.env` to the application container. The production database must already be available at `DB_URL`.
 
 ## ERD
 

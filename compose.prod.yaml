@@ -1,0 +1,17 @@
+services:
+  app:
+    build: .
+    container_name: inventory-api
+
+    ports:
+      - '8080:8080'
+
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+
+      DB_URL: ${DB_URL}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_EXPIRATION_MS: ${JWT_EXPIRATION_MS}

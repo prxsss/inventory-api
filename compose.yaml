@@ -1,24 +1,4 @@
 services:
-  app:
-    build: .
-    container_name: inventory-api
-
-    ports:
-      - "8080:8080"
-
-    environment:
-      SPRING_PROFILES_ACTIVE: prod
-
-      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/${POSTGRES_DB}
-      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER}
-      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
-
-      JWT_SECRET: ${JWT_SECRET}
-      JWT_EXPIRATION_MS: ${JWT_EXPIRATION_MS}
-
-    depends_on:
-      - db
-
   db:
     image: postgres:16
     container_name: inventory-postgres
@@ -29,7 +9,7 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
 
     ports:
-      - "5432:5432"
+      - '5432:5432'
 
     volumes:
       - postgres_data:/var/lib/postgresql/data
