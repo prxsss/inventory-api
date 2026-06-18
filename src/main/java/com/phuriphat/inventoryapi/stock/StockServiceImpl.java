@@ -23,7 +23,7 @@ public class StockServiceImpl implements StockService {
 
     @Override
     @Transactional
-    public void stockIn(StockRequest stockRequest) {
+    public void stockIn(StockRequest stockRequest, String createdBy) {
         Product product = productRepository.findById(stockRequest.getProductId())
                 .orElseThrow(() -> new ResourceNotFoundException("Product not found"));
 
@@ -36,6 +36,7 @@ public class StockServiceImpl implements StockService {
                 .type(TransactionType.IN)
                 .quantity(stockRequest.getQuantity())
                 .note(stockRequest.getNote())
+                .createdBy(createdBy)
                 .build();
 
         stockTransactionRepository.save(stockTransaction);
@@ -45,7 +46,7 @@ public class StockServiceImpl implements StockService {
 
     @Override
     @Transactional
-    public void stockOut(StockRequest stockRequest) {
+    public void stockOut(StockRequest stockRequest, String createdBy) {
         Product product = productRepository.findById(stockRequest.getProductId())
                 .orElseThrow(() -> new ResourceNotFoundException("Product not found"));
 
@@ -60,6 +61,7 @@ public class StockServiceImpl implements StockService {
                 .type(TransactionType.OUT)
                 .quantity(stockRequest.getQuantity())
                 .note(stockRequest.getNote())
+                .createdBy(createdBy)
                 .build();
 
         stockTransactionRepository.save(stockTransaction);
@@ -76,6 +78,7 @@ public class StockServiceImpl implements StockService {
                         .type(stockTransaction.getType())
                         .quantity(stockTransaction.getQuantity())
                         .note(stockTransaction.getNote())
+                        .createdBy(stockTransaction.getCreatedBy())
                         .createdAt(stockTransaction.getCreatedAt())
                         .updatedAt(stockTransaction.getUpdatedAt())
                         .build());
@@ -92,6 +95,7 @@ public class StockServiceImpl implements StockService {
                         .type(stockTransaction.getType())
                         .quantity(stockTransaction.getQuantity())
                         .note(stockTransaction.getNote())
+                        .createdBy(stockTransaction.getCreatedBy())
                         .createdAt(stockTransaction.getCreatedAt())
                         .updatedAt(stockTransaction.getUpdatedAt())
                         .build()

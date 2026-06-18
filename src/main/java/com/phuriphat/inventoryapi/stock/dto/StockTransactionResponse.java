@@ -24,6 +24,8 @@ public class StockTransactionResponse {
 
     private String note;
 
+    private String createdBy;
+
     private LocalDateTime createdAt;
 
     private LocalDateTime updatedAt;

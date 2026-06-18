@@ -1,5 +1,6 @@
 package com.phuriphat.inventoryapi.stock;
 
+import com.phuriphat.inventoryapi.auth.User;
 import com.phuriphat.inventoryapi.common.ApiResponse;
 import com.phuriphat.inventoryapi.common.PaginationHelper;
 import com.phuriphat.inventoryapi.common.PaginationResponse;
@@ -13,6 +14,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -25,9 +28,10 @@ public class StockController {
 
     @PostMapping("/in")
     public ResponseEntity<ApiResponse<Void>> stockIn(
-            @Valid @RequestBody StockRequest stockRequest
+            @Valid @RequestBody StockRequest stockRequest,
+            @AuthenticationPrincipal UserDetails userDetails
     ) {
-        stockService.stockIn(stockRequest);
+        stockService.stockIn(stockRequest, ((User) userDetails).getName());
         ApiResponse<Void> apiResponse = ApiResponse.<Void>builder()
                 .success(true)
                 .message("Stock added")
@@ -39,9 +43,10 @@ public class StockController {
 
     @PostMapping("/out")
     public ResponseEntity<ApiResponse<Void>> stockOut(
-            @Valid @RequestBody StockRequest stockRequest
+            @Valid @RequestBody StockRequest stockRequest,
+            @AuthenticationPrincipal UserDetails userDetails
     ) {
-        stockService.stockOut(stockRequest);
+        stockService.stockOut(stockRequest, ((User) userDetails).getName());
         ApiResponse<Void> apiResponse = ApiResponse.<Void>builder()
                 .success(true)
                 .message("Stock removed")

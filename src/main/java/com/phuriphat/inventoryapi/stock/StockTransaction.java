@@ -28,4 +28,7 @@ public class StockTransaction extends BaseEntity {
     private Integer quantity;
 
     private String note;
+
+    @Column(name = "created_by")
+    private String createdBy;
 }

@@ -8,9 +8,9 @@ import org.springframework.data.domain.Pageable;
 
 public interface StockService {
 
-    void stockIn(StockRequest stockRequest);
+    void stockIn(StockRequest stockRequest, String createdBy);
 
-    void stockOut(StockRequest stockRequest);
+    void stockOut(StockRequest stockRequest, String createdBy);
 
     Page<StockTransactionResponse> getHistory(Pageable pageable);
 

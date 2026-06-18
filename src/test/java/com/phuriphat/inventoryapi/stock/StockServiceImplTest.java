@@ -71,6 +71,8 @@ class StockServiceImplTest {
         return request;
     }
 
+    private static final String CREATED_BY = "John Doe";
+
     private StockTransaction createStockTransaction(Long id) {
         return StockTransaction.builder()
                 .id(id)
@@ -78,6 +80,7 @@ class StockServiceImplTest {
                 .type(TransactionType.IN)
                 .quantity(1)
                 .note("Restock from supplier")
+                .createdBy(CREATED_BY)
                 .build();
     }
 
@@ -96,7 +99,7 @@ class StockServiceImplTest {
                 .thenAnswer(invocation -> invocation.getArgument(0));
 
         // When
-        stockService.stockIn(request);
+        stockService.stockIn(request, CREATED_BY);
 
         // Then
         ArgumentCaptor<StockTransaction> transactionCaptor = ArgumentCaptor.forClass(StockTransaction.class);
@@ -115,6 +118,7 @@ class StockServiceImplTest {
         assertEquals(TransactionType.IN, savedTransaction.getType());
         assertEquals(request.getQuantity(), savedTransaction.getQuantity());
         assertEquals(request.getNote(), savedTransaction.getNote());
+        assertEquals(CREATED_BY, savedTransaction.getCreatedBy());
         assertEquals(existingProduct.getId(), savedTransaction.getProduct().getId());
     }
 
@@ -128,7 +132,7 @@ class StockServiceImplTest {
 
         // When
         ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () ->
-                stockService.stockIn(request)
+                stockService.stockIn(request, CREATED_BY)
         );
 
         // Then
@@ -157,7 +161,7 @@ class StockServiceImplTest {
         );
 
         //  WHEN
-        stockService.stockOut(request);
+        stockService.stockOut(request, CREATED_BY);
 
         //  THEN
         ArgumentCaptor<StockTransaction> stockTransactionCaptor = ArgumentCaptor.forClass(StockTransaction.class);
@@ -175,6 +179,7 @@ class StockServiceImplTest {
         assertEquals(request.getNote(), savedTransaction.getNote());
         assertEquals(TransactionType.OUT, savedTransaction.getType());
         assertEquals(request.getQuantity(), savedTransaction.getQuantity());
+        assertEquals(CREATED_BY, savedTransaction.getCreatedBy());
         assertEquals(existingProduct.getId(), savedTransaction.getProduct().getId());
     }
 
@@ -192,7 +197,7 @@ class StockServiceImplTest {
 
         //  WHEN
         RuntimeException exception = assertThrows(RuntimeException.class, () ->
-                stockService.stockOut(request)
+                stockService.stockOut(request, CREATED_BY)
         );
 
         //  THEN
@@ -215,7 +220,7 @@ class StockServiceImplTest {
 
         //  WHEN
         ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () ->
-                stockService.stockOut(request)
+                stockService.stockOut(request, CREATED_BY)
         );
 
         //  THEN
@@ -238,7 +243,7 @@ class StockServiceImplTest {
                 )
         );
 
-        when(stockTransactionRepository.findAll(pageable)).thenReturn(stockTransactionPage);
+        when(stockTransactionRepository.findAllByOrderByCreatedAtDesc(pageable)).thenReturn(stockTransactionPage);
 
         // WHEN
         Page<StockTransactionResponse> result =  stockService.getHistory(pageable);
@@ -256,8 +261,10 @@ class StockServiceImplTest {
         assertEquals(1, result.getContent().get(1).getQuantity());
         assertEquals("Restock from supplier", result.getContent().get(0).getNote());
         assertEquals("Restock from supplier", result.getContent().get(1).getNote());
+        assertEquals(CREATED_BY, result.getContent().get(0).getCreatedBy());
+        assertEquals(CREATED_BY, result.getContent().get(1).getCreatedBy());
 
-        verify(stockTransactionRepository,  times(1)).findAll(pageable);
+        verify(stockTransactionRepository,  times(1)).findAllByOrderByCreatedAtDesc(pageable);
     }
 
     @Test
@@ -290,6 +297,8 @@ class StockServiceImplTest {
         assertEquals(1, result.getContent().get(1).getQuantity());
         assertEquals("Restock from supplier", result.getContent().get(0).getNote());
         assertEquals("Restock from supplier", result.getContent().get(1).getNote());
+        assertEquals(CREATED_BY, result.getContent().get(0).getCreatedBy());
+        assertEquals(CREATED_BY, result.getContent().get(1).getCreatedBy());
 
         verify(productRepository, times(1)).findById(1L);
         verify(stockTransactionRepository, times(1)).findByProductIdOrderByCreatedAtDesc(1L, pageable);
